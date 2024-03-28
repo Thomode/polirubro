@@ -1,13 +1,11 @@
-import express, { Request, Response } from "express"
+import { Router } from "express"
 import { ProductController } from "../controllers/product.controller"
-import { prisma } from "../server"
-import { Product } from "@prisma/client"
 
-export const productRouter = express.Router()
+export const productRouter = Router()
 
-productRouter.get("", async (req: Request, res: Response) => {
-    const products: Product[] = await prisma.product.findMany()
-
-    res.status(200).json(products)
-})
+productRouter.get("/", ProductController.getAll)
+productRouter.get("/:id", ProductController.getById)
+productRouter.post("/", ProductController.create)
+productRouter.put("/:id", ProductController.update)
+productRouter.delete("/:id", ProductController.delete)
 
