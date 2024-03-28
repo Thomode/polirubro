@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "v1.0.0",
+        "title": "Polirubro API",
+        "description": "polirubro"
+    },
+    "host": "localhost:3000",
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": ""
+        }
+    ],
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {},
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
