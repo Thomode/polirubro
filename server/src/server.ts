@@ -1,21 +1,23 @@
-import { PrismaClient } from "@prisma/client"
-import express, { Express, Request, Response } from "express"
+import express, { Application, Request, Response } from "express"
 import swaggerUi from "swagger-ui-express";
 import swaggerOutput from "./swagger_output.json";
 import { routes } from "./routes";
-import { runSwaggerAutogen } from "./swagger";
+import cors from "cors"
+import dotenv from "dotenv"
+import { prisma } from "./db";
 
-export const prisma: PrismaClient = new PrismaClient()
+dotenv.config()
 
-const PORT = 3000
-const HOSTNAME = `http://localhost`
-
-const app: Express = express()
+const PORT: number = Number(process.env.SERVER_PORT) || 8080
+const HOSTNAME: string = `http://localhost`
 
 async function main() {
-    await runSwaggerAutogen()
+    const app: Application = express()
+
+    // await runSwaggerAutogen()
 
     // Middlewares
+    app.use(cors())
     app.use(express.json())
 
     // Routes

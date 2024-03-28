@@ -25,7 +25,9 @@ export async function runSwaggerAutogen() {
 
 
     const outputFile = './swagger_output.json'
-    const endpointsFiles = ['./src/routes/*.ts']
+    const endpointsFiles = ['./src/routes/index.ts']
 
     await swaggerAutogen({ openapi: '3.0.0' })(outputFile, endpointsFiles, doc)
 }
+
+runSwaggerAutogen()
