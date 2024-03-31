@@ -5,11 +5,11 @@ export function auth(req: Request & { user: any }, res: Response, next: NextFunc
     const authHeader = req.headers.authorization
 
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(403).json({ error: "Access denied. Bearer token missing." })
     }
 
-    const token = authHeader.split(' ')[1]
+    const token = authHeader.split(" ")[1]
 
     try {
         const userVerified = jwt.verify(token, process.env.TOKEN_SECRET)

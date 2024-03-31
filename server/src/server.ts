@@ -5,6 +5,7 @@ import { routes } from "./routes";
 import cors from "cors"
 import dotenv from "dotenv"
 import { prisma } from "./db";
+import { errorHandler } from "./middlewares/error-handler.middleware";
 
 dotenv.config()
 
@@ -23,6 +24,8 @@ async function main() {
     // Routes
     app.use("/", routes)
     app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
+
+    app.use(errorHandler)
 
     // Catch unregistered routes
     app.all("*", (req: Request, res: Response) => {

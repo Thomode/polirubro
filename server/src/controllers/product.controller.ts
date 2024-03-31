@@ -1,9 +1,13 @@
 import { Product } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { prisma } from "../db";
+import { CustomRequest } from "../interfaces/custom-request.interface";
+import { CreateProductType } from "../schemas/product.schema";
+import ResponseStatusException from "../errors/ResponseStatusException";
+import { StatusCodes } from "http-status-codes";
 
 export class ProductController {
-    static async getAll(req: Request, res: Response) {
+    static async getAll(req: CustomRequest, res: Response) {
         try {
             const products: Product[] = await prisma.product.findMany()
 
@@ -14,7 +18,7 @@ export class ProductController {
         }
     }
 
-    static async getById(req: Request, res: Response) {
+    static async getById(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             const { id } = req.params
 
@@ -25,15 +29,13 @@ export class ProductController {
             })
 
             if (!product) {
-                return res.status(404).json({
-                    error: "Product not found"
-                })
+                throw new ResponseStatusException({statusCode: StatusCodes.NOT_FOUND, message: "Product not found"})
             }
 
-            return res.status(200).json(product)
+            return res.status(StatusCodes.OK).json(product)
 
         } catch (error) {
-            res.status(500).json({ error })
+            next(error)
         }
     }
 
@@ -51,7 +53,7 @@ export class ProductController {
         }
     }
 
-    static async update(req: Request, res: Response) {
+    static async update(req: CustomRequest, res: Response) {
         try {
             const { id } = req.params
             const product = req.body
@@ -73,10 +75,10 @@ export class ProductController {
         }
     }
 
-    static async delete(req: Request, res: Response) {
+    static async delete(req: CustomRequest, res: Response) {
         try {
             const { id } = req.params
-
+            
             await prisma.product.delete({
                 where: {
                     id: parseInt(id)

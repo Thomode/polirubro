@@ -3,12 +3,10 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { prisma } from "../db"
 import { User } from "@prisma/client";
-import dotenv from "dotenv"
-
-dotenv.config()
+import { CustomRequest } from "../interfaces/custom-request.interface";
 
 export class AuthController {
-    static async login(req: Request, res: Response) {
+    static async login(req: CustomRequest, res: Response) {
         const userFound: User = await prisma.user.findUnique({
             where: {
                 email: req.body.email
@@ -37,10 +35,10 @@ export class AuthController {
             { expiresIn: process.env.TOKEN_EXPIRES_IN }
         )
 
-        res.header('Authorization', token).json({ token })
+        res.header("Authorization", token).json({ token })
     }
 
-    static async register(req: Request, res: Response) {
+    static async register(req: CustomRequest, res: Response) {
         const isEmailExist = await prisma.user.findUnique({
             where: {
                 email: req.body.email
@@ -48,7 +46,7 @@ export class AuthController {
         })
 
         if (isEmailExist) {
-            return res.status(400).json({ error: 'Email registred' })
+            return res.status(400).json({ error: "Email registred" })
         }
 
         // hash password
