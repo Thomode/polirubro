@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
-export function auth(req: Request, res: Response, next: NextFunction) {
+export function auth(req: Request & { user: any }, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization
 
 
@@ -12,8 +12,8 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     const token = authHeader.split(' ')[1]
 
     try {
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET)
-        //req.email = verified
+        const userVerified = jwt.verify(token, process.env.TOKEN_SECRET)
+        req.user = userVerified
 
         next()
 

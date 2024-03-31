@@ -25,14 +25,19 @@ export class AuthController {
             return res.status(403).json({ error: "Password invalid" })
         }
 
-        // create token
-        const token: string = jwt.sign({
+        const payload = {
             email: userFound.email,
             id: userFound.id
-        }, process.env.TOKEN_SECRET)
+        }
 
-        res.header('Authorization', token).json({token})
+        // create token
+        const token: string = jwt.sign(
+            payload,
+            process.env.TOKEN_SECRET,
+            { expiresIn: process.env.TOKEN_EXPIRES_IN }
+        )
 
+        res.header('Authorization', token).json({ token })
     }
 
     static async register(req: Request, res: Response) {
