@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
-export function validateToken(req: Request, res: Response, next: NextFunction) {
-    const authHeader = req.headers['authorization']
+export function auth(req: Request, res: Response, next: NextFunction) {
+    const authHeader = req.headers.authorization
 
-    console.log(authHeader)
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(403).json({ error: "Access denied. Bearer token missing." })
