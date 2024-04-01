@@ -1,71 +1,80 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { prisma } from "../db"
 import { User } from "@prisma/client";
 import { CustomRequest } from "../interfaces/custom-request.interface";
+import { StatusCodes } from "http-status-codes";
 
 export class AuthController {
-    static async login(req: CustomRequest, res: Response) {
-        const userFound: User = await prisma.user.findUnique({
-            where: {
-                email: req.body.email
-            }
-        })
-
-        if (!userFound) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        const validPassword = await bcrypt.compare(req.body.password, userFound.password);
-
-        if (!validPassword) {
-            return res.status(403).json({ error: "Password invalid" })
-        }
-
-        const payload = {
-            email: userFound.email,
-            id: userFound.id
-        }
-
-        // create token
-        const token: string = jwt.sign(
-            payload,
-            process.env.TOKEN_SECRET,
-            { expiresIn: process.env.TOKEN_EXPIRES_IN }
-        )
-
-        res.header("Authorization", token).json({ token })
-    }
-
-    static async register(req: CustomRequest, res: Response) {
-        const isEmailExist = await prisma.user.findUnique({
-            where: {
-                email: req.body.email
-            }
-        })
-
-        if (isEmailExist) {
-            return res.status(400).json({ error: "Email registred" })
-        }
-
-        // hash password
-        const salt = await bcrypt.genSalt(10);
-        const password = await bcrypt.hash(req.body.password, salt);
-
+    static async login(req: CustomRequest, res: Response, next: NextFunction) {
         try {
-            const userCreated = await prisma.user.create({
-                data: {
-                    email: req.body.email,
-                    password: password,
-                    fullname: req.body.fullname
+            const { email, password } = req.body
+
+            const userFound: User = await prisma.user.findUnique({
+                where: {
+                    email: email
                 }
             })
 
-            res.status(200).json(userCreated)
+            if (!userFound) {
+                return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+            }
+
+            const validPassword = await bcrypt.compare(password, userFound.password);
+
+            if (!validPassword) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ error: "Password invalid" })
+            }
+
+            const payload = {
+                email: userFound.email,
+                id: userFound.id
+            }
+
+            // create token
+            const token: string = jwt.sign(
+                payload,
+                process.env.TOKEN_SECRET,
+                { expiresIn: process.env.TOKEN_EXPIRES_IN }
+            )
+
+            res.status(StatusCodes.OK).json({ token })
 
         } catch (error) {
-            res.status(500).json({ error })
+            next(error)
+        }
+    }
+
+    static async register(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const { email, password, fullname } = req.body
+
+            const isEmailExist = await prisma.user.findUnique({
+                where: {
+                    email: email
+                }
+            })
+
+            if (isEmailExist) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ error: "Email registred" })
+            }
+
+            // hash password
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(password, salt);
+            const userCreated = await prisma.user.create({
+                data: {
+                    email: email,
+                    password: passwordHash,
+                    fullname: fullname
+                }
+            })
+
+            res.status(StatusCodes.CREATED).json(userCreated)
+
+        } catch (error) {
+            next(error)
         }
     }
 }

@@ -15,8 +15,6 @@ const HOSTNAME: string = `http://localhost`
 async function main() {
     const app: Application = express()
 
-    // await runSwaggerAutogen()
-
     // Middlewares
     app.use(cors())
     app.use(express.json())

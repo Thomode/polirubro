@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
+import { CustomRequest } from "../interfaces/custom-request.interface"
 
-export function auth(req: Request & { user: any }, res: Response, next: NextFunction) {
+export function auth(req: CustomRequest, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization
 
 

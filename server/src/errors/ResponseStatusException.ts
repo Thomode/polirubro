@@ -1,6 +1,6 @@
 import { CustomError } from "./CustomError"
 
-export default class ResponseStatusException extends CustomError {
+export class ResponseStatusException extends CustomError {
     private readonly _statusCode: number
     private readonly _logging: boolean
     private readonly _context: { [key: string]: any }

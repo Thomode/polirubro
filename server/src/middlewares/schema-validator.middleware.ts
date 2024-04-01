@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { AnyZodObject, ZodError } from "zod";
-import { CustomRequest } from "../interfaces/custom-request.interface";
+import { NextFunction, Request, Response } from "express"
+import { AnyZodObject, ZodError } from "zod"
+import { CustomRequest } from "../interfaces/custom-request.interface"
 
 export const schemaValition = (schema: AnyZodObject) =>
     (req: CustomRequest, res: Response, next: NextFunction) => {

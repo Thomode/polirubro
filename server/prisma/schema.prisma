@@ -19,23 +19,26 @@ model Product {
     quantityStock Int
     user          User     @relation(fields: [userId], references: [id])
     userId        Int
-    category      Category @relation(fields: [categotyId], references: [id])
-    categotyId    Int
+    category      Category @relation(fields: [categoryId], references: [id])
+    categoryId    Int
     createdAt     DateTime @default(now())
 }
 
 model Category {
     id        Int       @id @default(autoincrement())
     name      String    @unique
+    user      User      @relation(fields: [userId], references: [id])
+    userId    Int
     createdAt DateTime  @default(now())
     products  Product[]
 }
 
 model User {
-    id        Int       @id @default(autoincrement())
-    email     String    @unique
+    id        Int        @id @default(autoincrement())
+    email     String     @unique
     password  String
     fullname  String
-    createdAt DateTime  @default(now())
+    createdAt DateTime   @default(now())
     products  Product[]
+    Category  Category[]
 }

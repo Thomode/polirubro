@@ -9,7 +9,8 @@
     "dev": "ts-node-dev ./src/server.ts",
     "build": "tsc",
     "db:migrate": "npx prisma migrate dev",
-    "db:push": "npx prisma db push"
+    "db:push": "npx prisma db push",
+    "swagger": "ts-node ./src/swagger.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../errors/CustomError";
+import { NextFunction, Request, Response } from "express"
+import { CustomError } from "../errors/CustomError"
 
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
     // Handled errors
@@ -18,9 +18,9 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
     }
 
     // Unhandled errors
-    console.error(JSON.stringify(error, null, 2));
+    console.error(JSON.stringify(error, null, 2))
 
     return res.status(500).send({
-        errors: [{ message: "Something went wrong" }]
+        errors: [{ message: "Internal Server Error" }]
     });
 }
